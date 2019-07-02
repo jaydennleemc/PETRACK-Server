@@ -14,9 +14,9 @@ var payload = {
     data4: "Data 4",
 };
 
-var i = 'Mysoft corp';          // Issuer 
-var s = 'some@user.com';        // Subject 
-var a = 'http://mysoftcorp.in'; // Audience
+var i = 'PETRACK';          // Issuer 
+var s = 'admin@petrack.com';        // Subject 
+var a = 'http://petrack.app.io'; // Audience
 
 // SIGNING OPTIONS
 var signOptions = {
@@ -35,9 +35,15 @@ var verifyOptions = {
     algorithm: ["RS256"]
 };
 
-exports.generateJWT = function () {
+exports.generateJWT = function (obj) {
+    var payload = {
+        id: obj.id,
+        name: obj.name,
+        email: obj.email,
+    };
     var token = jwt.sign(payload, privateKEY, signOptions);
     console.log("Token :" + token);
+    return token;
 }
 
 exports.verifyJWT = function (token) {

@@ -1,5 +1,7 @@
 
+const mongoHelper = require('../../utils/mongoHelper');
 const httpService = require('../../service/httpService');
+const utils = require('../../utils/utils');
 
 exports.validateFacebook = function (req, res, next) {
   console.log('validateFacebook API was called');
@@ -12,17 +14,22 @@ exports.validateFacebook = function (req, res, next) {
       if (result) {
         res.json({
           'code': 0,
-          'message': 'Success'
+          'message': 'Success',
+          'token': utils.generateJWT(result)
         });
       } else {
         res.json({
           'code': 1,
-          'message': 'Success'
+          'message': 'Can\'t Login With Facebook'
         });
       }
 
     }).catch(err => {
       console.log(err);
+      res.json({
+        'code': 1,
+        'message': 'Can\'t Login With Facebook'
+      });
     })
 
   } else if (req.body.mobile != null && req.param.code != null) {
@@ -40,6 +47,23 @@ exports.validateFacebook = function (req, res, next) {
   }
 
 };
+
+
+function facebookLogin(data) {
+  var user = {
+    id:data.id,
+    name:data.name,
+    gender:data.gender,
+    birthday:data.birthday,
+    picture:data.picture.data.url,
+    email:data.email,
+    token:utils.generateJWT(data),
+    status:true
+  }
+
+  mongoHelper.insertDocument(user)
+  
+}
 
 
 exports.signOut = function (req, res, next) {
