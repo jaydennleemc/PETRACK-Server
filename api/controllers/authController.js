@@ -30,7 +30,7 @@ exports.validateFacebook = function (req, res, next) {
         'code': 1,
         'message': 'Can\'t Login With Facebook'
       });
-    })
+    });
 
   } else if (req.body.mobile != null && req.param.code != null) {
     // Mobile Login
@@ -59,10 +59,16 @@ function facebookLogin(data) {
     email:data.email,
     token:utils.generateJWT(data),
     status:true
+  };
+
+  var u = mongoHelper.findOne(data.id);
+
+  if(u == null) {
+    mongoHelper.insertDocument(user);
+  }else {
+    u.status = true;
   }
 
-  mongoHelper.insertDocument(user)
-  
 }
 
 

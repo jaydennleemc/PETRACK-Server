@@ -12,8 +12,7 @@ const CollectionName = 'petrack';
 exports.healthCheckDB = function () {
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
-        console.log('**** Database healthCheck!! ****')
-
+        console.log('**** Database healthCheck!! ****');
         var dbo = db.db(DBName);
         dbo.collection(CollectionName).find({}).toArray(function (err, result) {
             if (err) throw err;
@@ -24,48 +23,96 @@ exports.healthCheckDB = function () {
 }
 
 exports.findAllData = function () {
-    MongoClient.connect(url, function (err, db) {
-        if (err) throw err;
-        console.log('**** Database healthCheck!! ****')
-
-        var dbo = db.db(DBName);
-        dbo.collection(CollectionName).find({}).toArray(function (err, result) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
             if (err) throw err;
-            console.log(`size = ${result.length}`);
-            db.close();
+            console.log('**** Database connected!! ****');
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).find({}).toArray(function (err, result) {
+                if (err) throw err;
+                console.log(`size = ${result.length}`);
+                db.close();
+                resolve(result);
+            });
         });
     });
-}
+};
 
-exports.insertDocument = async function (doc) {
-    MongoClient.connect(url, function (err, db) {
-        if (err) throw err;
-        console.log('**** Database healthCheck!! ****')
-
-        var dbo = db.db(DBName);
-        dbo.collection(CollectionName).insert(doc, function (err, res) {
+exports.findOne = function (id) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
             if (err) throw err;
-            console.log(`****   ${doc} was inserted ****`);
-            console.log(res);
-            db.close();
+            console.log('**** Database connected!! ****');
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).findOne({ 'id': id }, function (err, result) {
+                if (err) throw err;
+                db.close();
+                resolve(result);
+            });
+        });
+    });
+};
+
+
+exports.insertDocument = function (doc) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            console.log('**** Database connected!! ****');
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).insert(doc, function (err, res) {
+                if (err) throw err;
+                console.log(`****   ${doc} was inserted ****`);
+                console.log(res);
+                db.close();
+                if (res.result.ok == 1) {
+                    resolve(true);
+                } else {
+                    reject(false);
+                }
+            });
+        });
+
+    });
+};
+
+
+exports.updateDocument = function (id, doc) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            console.log('**** Database connected!! ****');
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).updateOne({ 'id': id }, doc, function (err, res) {
+                if (err) throw err;
+                console.log(`****   ${doc} was inserted ****`);
+                console.log(res);
+                db.close();
+            });
+        });
+    });
+};
+
+
+exports.insertDocuments = function (docs) {
+
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            console.log('**** Database connected!! ****')
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).insertMany(docs, function (err, res) {
+                if (err) throw err;
+                console.log(`**** ${docs} was inserted ****`);
+                console.log(res);
+                db.close();
+            });
         });
     });
 
-}
-
-exports.insertDocuments = async function (docs) {
-
-    MongoClient.connect(url, function (err, db) {
-        if (err) throw err;
-        console.log('**** Database healthCheck!! ****')
-
-        var dbo = db.db(DBName);
-        dbo.collection(CollectionName).insertMany(docs, function (err, res) {
-            if (err) throw err;
-            console.log(`**** ${docs} was inserted ****`)
-            console.log(res);
-            db.close();
-        });
-    });
-
-}
+};

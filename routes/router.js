@@ -21,7 +21,10 @@ router.get('/', function (req, res) {
 router.get('/db', function (req, res, next) {
   console.log('**** health check API was called **** ');
 
-  commonUtil.verifyJWT("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhMSI6IkRhdGEgMSIsImRhdGEyIjoiRGF0YSAyIiwiZGF0YTMiOiJEYXRhIDMiLCJkYXRhNCI6IkRhdGEgNCIsImlhdCI6MTU2MjA1NTQ0NywiZXhwIjoxNTYyMDk4NjQ3LCJhdWQiOiJodHRwOi8vbXlzb2Z0Y29ycC5pbiIsImlzcyI6Ik15c29mdCBjb3JwIiwic3ViIjoic29tZUB1c2VyLmNvbSJ9.efHZRsubdM6ERMlBZ0Yhu-LmNae3nrdO2PTbDZ0AJMt6XioNvyYL2LY9OSCVvkVaSHiL_FsKX0BI9ghTf8AfYg");
+  // commonUtil.verifyJWT("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhMSI6IkRhdGEgMSIsImRhdGEyIjoiRGF0YSAyIiwiZGF0YTMiOiJEYXRhIDMiLCJkYXRhNCI6IkRhdGEgNCIsImlhdCI6MTU2MjA1NTQ0NywiZXhwIjoxNTYyMDk4NjQ3LCJhdWQiOiJodHRwOi8vbXlzb2Z0Y29ycC5pbiIsImlzcyI6Ik15c29mdCBjb3JwIiwic3ViIjoic29tZUB1c2VyLmNvbSJ9.efHZRsubdM6ERMlBZ0Yhu-LmNae3nrdO2PTbDZ0AJMt6XioNvyYL2LY9OSCVvkVaSHiL_FsKX0BI9ghTf8AfYg");
+  mongoHelper.findAllData().then(result => {
+    console.log('we found many data ' + result.length)
+  });
 
   res.json({ 'message': 'Success' });
 
@@ -31,11 +34,20 @@ router.get('/db', function (req, res, next) {
 router.get('/insert', function (req, res, next) {
   console.log('**** insert API was called **** ');
 
-  var myobj = [{ id: "1123", name: "Company Inc", address: "Highway 37" },
-  { id: "1123", name: "Company Inc", address: "Highway 37" },
-  { id: "1123", name: "Company Inc", address: "Highway 37" },
-  { id: "1123", name: "Company Inc", address: "Highway 37" }];
-  mongoHelper.insertDocuments(myobj)
+  var myobj = [
+    { id: "11231111", name: "Company Inc", address: "Highway 37" },
+    { id: "11231111", name: "Company Inc", address: "Highway 37" },
+    { id: "11231111", name: "Company Inc", address: "Highway 37" },
+    { id: "11231111", name: "Company Inc", address: "Highway 37" }
+  ];
+
+  var obj = { id: "11231111", name: "Company Inc", address: "Highway 37" }
+
+  // mongoHelper.insertDocuments(myobj);
+
+  mongoHelper.insertDocument(obj).then(res => {
+    console.log('result ' + res);
+  });
 
   res.json({ 'message': 'Success' });
 
@@ -43,13 +55,33 @@ router.get('/insert', function (req, res, next) {
 });
 
 router.get('/delete', function (req, res, next) {
-  console.log('**** detele check API was called **** ');
+  console.log('**** delete check API was called **** ');
 
-  mongoHelper.findAllData()
 
-  res.json({ 'message': 'Success' });
+  return new Promise((resolve, reject) => {
+    var bb = mongoHelper.findOne('11231111');
 
-  next();
+    if (bb) {
+      console.log('found');
+      res.json({ 'message': 'Success' });
+      resolve();
+    }
+
+  });
+
+
+  // res.json({'aa':aa});
+
+  // aa.bb = '111';
+
+  // if(aa == null) {
+  //   console.log('tuyr');
+  //   // mongoHelper.updateDocument(aa.id, aa);
+  // }
+
+  // res.json({ 'message': 'Success' });
+
+  // next();
 });
 
 
