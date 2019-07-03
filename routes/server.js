@@ -9,5 +9,10 @@ app.use(bodyParser.json());
 app.use('/api',router);
 
 app.listen(PORT,function(){
+  // clear console
+  for(i =0; i<100; i++){
+    console.log();
+  }
+
   console.log('Server is running at PORT:',PORT);
 });

@@ -59,13 +59,25 @@ router.get('/delete', function (req, res, next) {
 
 
   return new Promise((resolve, reject) => {
-    var bb = mongoHelper.findOne('11231111');
+    mongoHelper.findOne('11231111').then(result => {
 
-    if (bb) {
-      console.log('found');
-      res.json({ 'message': 'Success' });
-      resolve();
-    }
+      result.bb = 'afaf'
+
+      console.log(result)
+
+
+
+
+      if (mongoHelper.updateDocument(result.id, result)) {
+        console.log('found');
+        res.json({ 'message': 'Success' });
+        resolve();
+      }
+
+    });
+
+
+
 
   });
 

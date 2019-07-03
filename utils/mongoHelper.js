@@ -66,7 +66,7 @@ exports.insertDocument = function (doc) {
             dbo.collection(CollectionName).insert(doc, function (err, res) {
                 if (err) throw err;
                 console.log(`****   ${doc} was inserted ****`);
-                console.log(res);
+                console.log(res.result);
                 db.close();
                 if (res.result.ok == 1) {
                     resolve(true);
@@ -87,10 +87,15 @@ exports.updateDocument = function (id, doc) {
             console.log('**** Database connected!! ****');
 
             var dbo = db.db(DBName);
-            dbo.collection(CollectionName).updateOne({ 'id': id }, doc, function (err, res) {
+            dbo.collection(CollectionName).updateOne({ 'id': id }, {$set:doc}, function (err, res) {
                 if (err) throw err;
-                console.log(`****   ${doc} was inserted ****`);
-                console.log(res);
+                console.log(`****   ${doc} was updated ****`);
+                console.log(res.result);
+                if(res.result.ok == 1) {
+                    resolve(true);
+                }else {
+                    resolve(false);
+                }
                 db.close();
             });
         });
@@ -109,7 +114,7 @@ exports.insertDocuments = function (docs) {
             dbo.collection(CollectionName).insertMany(docs, function (err, res) {
                 if (err) throw err;
                 console.log(`**** ${docs} was inserted ****`);
-                console.log(res);
+                console.log(res.result);
                 db.close();
             });
         });

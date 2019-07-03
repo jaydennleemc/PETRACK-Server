@@ -8,22 +8,9 @@ exports.validateFacebook = function (req, res, next) {
   if (req.body.access_token != null) {
     // Facebook Login
     const token = req.body.access_token;
-
     httpService.validateFacebookToken(token).then((result) => {
-      console.log(result);
-      if (result) {
-        res.json({
-          'code': 0,
-          'message': 'Success',
-          'token': utils.generateJWT(result)
-        });
-      } else {
-        res.json({
-          'code': 1,
-          'message': 'Can\'t Login With Facebook'
-        });
-      }
-
+      // console.log(`result \n ${result}`);
+      facebookLogin(result, res);
     }).catch(err => {
       console.log(err);
       res.json({
@@ -41,7 +28,7 @@ exports.validateFacebook = function (req, res, next) {
 
   } else {
     res.json({
-      'code': 0,
+      'code': 1,
       'message': 'Error'
     });
   }
@@ -49,35 +36,72 @@ exports.validateFacebook = function (req, res, next) {
 };
 
 
-function facebookLogin(data) {
-  var user = {
-    id:data.id,
-    name:data.name,
-    gender:data.gender,
-    birthday:data.birthday,
-    picture:data.picture.data.url,
-    email:data.email,
-    token:utils.generateJWT(data),
-    status:true
-  };
+function facebookLogin(data, res) {
+  const result = JSON.parse(data);
+  var success = false;
+  const token = utils.generateJWT(data);
 
-  var u = mongoHelper.findOne(data.id);
+  mongoHelper.findOne(result.id).then(result => {
 
-  if(u == null) {
-    mongoHelper.insertDocument(user);
-  }else {
-    u.status = true;
-  }
+    console.log(result);
 
+    if (result == null) {
+      var user = {
+        id: result.id,
+        name: result.name,
+        gender: result.gender,
+        birthday: result.birthday,
+        picture: result.picture.data.url,
+        email: result.email,
+        token: token,
+        status: true
+      };
+      success = mongoHelper.insertDocument(user);
+    } else {
+      existUser = result;
+      existUser.status = true;
+      existUser.token = token
+      success = mongoHelper.updateDocument(result.id, existUser);
+    }
+
+    if (success) {
+      res.json({
+        'code': 0,
+        'message': 'Success',
+        'token': token
+      });
+    } else {
+      res.json({
+        'code': 1,
+        'message': 'Can\'t Login With Facebook'
+      });
+    }
+  })
 }
 
 
 exports.signOut = function (req, res, next) {
   console.log('signOut API was called');
-  res.json({
-    'code': 0,
-    'message': 'Success'
-  });
+  if (req.headers.authorization != null) {
+    const token = req.headers.authorization.replace('Bearer ', '')
+    console.log(token);
+    const result = JSON.parse(utils.verifyJWT(token));
+    mongoHelper.findOne(result.id).then(user => {
+      user.status = false
+      mongoHelper.updateDocument(user.id, user).then(result => {
+        if (result) {
+          res.json({
+            'code': 0,
+            'message': 'Success'
+          });
+        } else {
+          res.json({
+            'code': 1,
+            'message': 'Success'
+          });
+        }
+      })
+    })
 
-  next();
+  }
 };

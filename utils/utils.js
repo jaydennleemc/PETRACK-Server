@@ -37,9 +37,9 @@ var verifyOptions = {
 
 exports.generateJWT = function (obj) {
     var payload = {
-        id: obj.id,
-        name: obj.name,
-        email: obj.email,
+        id: JSON.parse(obj).id,
+        name: JSON.parse(obj).name,
+        email: JSON.parse(obj).email,
     };
     var token = jwt.sign(payload, privateKEY, signOptions);
     console.log("Token :" + token);
@@ -49,4 +49,5 @@ exports.generateJWT = function (obj) {
 exports.verifyJWT = function (token) {
     var legit = jwt.verify(token, publicKEY, verifyOptions);
     console.log("\nJWT verification result: " + JSON.stringify(legit));
+    return JSON.stringify(legit);
 }
