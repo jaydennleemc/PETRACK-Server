@@ -27,7 +27,6 @@ exports.findAllData = function () {
         MongoClient.connect(url, function (err, db) {
             if (err) throw err;
             console.log('**** Database connected!! ****');
-
             var dbo = db.db(DBName);
             dbo.collection(CollectionName).find({}).toArray(function (err, result) {
                 if (err) throw err;
@@ -44,7 +43,6 @@ exports.findOne = function (id) {
         MongoClient.connect(url, function (err, db) {
             if (err) throw err;
             console.log('**** Database connected!! ****');
-
             var dbo = db.db(DBName);
             dbo.collection(CollectionName).findOne({ 'id': id }, function (err, result) {
                 if (err) throw err;
@@ -61,7 +59,6 @@ exports.insertDocument = function (doc) {
         MongoClient.connect(url, function (err, db) {
             if (err) throw err;
             console.log('**** Database connected!! ****');
-
             var dbo = db.db(DBName);
             dbo.collection(CollectionName).insert(doc, function (err, res) {
                 if (err) throw err;
@@ -104,7 +101,6 @@ exports.updateDocument = function (id, doc) {
 
 
 exports.insertDocuments = function (docs) {
-
     return new Promise((resolve, reject) => {
         MongoClient.connect(url, function (err, db) {
             if (err) throw err;

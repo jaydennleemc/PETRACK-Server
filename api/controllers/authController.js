@@ -37,31 +37,31 @@ exports.validateFacebook = function (req, res, next) {
 
 
 function facebookLogin(data, res) {
-  const result = JSON.parse(data);
-  var success = false;
   const token = utils.generateJWT(data);
+  const json = JSON.parse(data);
+  var success = false;
 
-  mongoHelper.findOne(result.id).then(result => {
-
-    console.log(result);
-
-    if (result == null) {
+  mongoHelper.findOne(json.id).then(existUser => {
+    console.log(`existUser: \n ${JSON.stringify(existUser)}`);
+    if (existUser == null) {
       var user = {
-        id: result.id,
-        name: result.name,
-        gender: result.gender,
-        birthday: result.birthday,
-        picture: result.picture.data.url,
-        email: result.email,
-        token: token,
-        status: true
+        id: json.id,
+        'profile': {
+          name: json.name,
+          gender: json.gender,
+          birthday: json.birthday,
+          picture: json.picture.data.url,
+          email: json.email,
+          token: token,
+          status: true
+        }
       };
       success = mongoHelper.insertDocument(user);
     } else {
-      existUser = result;
-      existUser.status = true;
-      existUser.token = token
-      success = mongoHelper.updateDocument(result.id, existUser);
+      user = existUser;
+      user.profile.status = true;
+      user.profile.token = token
+      success = mongoHelper.updateDocument(user.id, user);
     }
 
     if (success) {
@@ -79,6 +79,11 @@ function facebookLogin(data, res) {
   })
 }
 
+function mobileLogin(data, res) {
+  const json = JSON.parse(data);
+  const token = utils.generateJWT(data);
+  var success = false;
+}
 
 exports.signOut = function (req, res, next) {
   console.log('signOut API was called');

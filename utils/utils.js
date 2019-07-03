@@ -51,3 +51,8 @@ exports.verifyJWT = function (token) {
     console.log("\nJWT verification result: " + JSON.stringify(legit));
     return JSON.stringify(legit);
 }
+
+
+exports.generatePetID = function() {
+    return 'p' + new Date().getTime();
+}
