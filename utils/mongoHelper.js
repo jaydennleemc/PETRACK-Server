@@ -53,6 +53,21 @@ exports.findOne = function (id) {
     });
 };
 
+exports.find = function (filter) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            console.log('**** Database connected!! ****');
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).find(filter).toArray(function (err, result) {
+                if (err) throw err;
+                db.close();
+                resolve(result);
+            });
+        })
+    })
+}
+
 
 exports.insertDocument = function (doc) {
     return new Promise((resolve, reject) => {
@@ -84,13 +99,13 @@ exports.updateDocument = function (id, doc) {
             console.log('**** Database connected!! ****');
 
             var dbo = db.db(DBName);
-            dbo.collection(CollectionName).updateOne({ 'id': id }, {$set:doc}, function (err, res) {
+            dbo.collection(CollectionName).updateOne({ 'id': id }, { $set: doc }, function (err, res) {
                 if (err) throw err;
                 console.log(`****   ${doc} was updated ****`);
                 console.log(res.result);
-                if(res.result.ok == 1) {
+                if (res.result.ok == 1) {
                     resolve(true);
-                }else {
+                } else {
                     resolve(false);
                 }
                 db.close();
@@ -98,7 +113,6 @@ exports.updateDocument = function (id, doc) {
         });
     });
 };
-
 
 exports.insertDocuments = function (docs) {
     return new Promise((resolve, reject) => {
@@ -111,9 +125,79 @@ exports.insertDocuments = function (docs) {
                 if (err) throw err;
                 console.log(`**** ${docs} was inserted ****`);
                 console.log(res.result);
+                if (res.result.ok == 1) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
                 db.close();
             });
         });
     });
+};
 
+exports.updateDocuments = function (id, doc) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            console.log('**** Database connected!! ****');
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).updateMany({ 'id': id }, { $set: doc }, function (err, res) {
+                if (err) throw err;
+                console.log(`****   ${doc} was updated ****`);
+                console.log(res.result);
+                if (res.result.ok == 1) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+                db.close();
+            });
+        });
+    });
+};
+
+exports.deleteDocument = function (id) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            console.log('**** Database connected!! ****');
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).deleteOne({ 'id': id }, function (err, res) {
+                if (err) throw err;
+                console.log(`****   document was deleted ****`);
+                console.log(res.result);
+                if (res.result.ok == 1) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+                db.close();
+            });
+        });
+    });
+};
+
+exports.deleteDocuments = function (id) {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            console.log('**** Database connected!! ****');
+
+            var dbo = db.db(DBName);
+            dbo.collection(CollectionName).deleteMany({ 'id': id }, function (err, res) {
+                if (err) throw err;
+                console.log(`****   documents was deleted ****`);
+                console.log(res.result);
+                if (res.result.ok == 1) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+                db.close();
+            });
+        });
+    });
 };

@@ -56,3 +56,7 @@ exports.verifyJWT = function (token) {
 exports.generatePetID = function() {
     return 'p' + new Date().getTime();
 }
+
+exports.generateDispenserID = function() {
+    return 'dispenser' + new Date().getTime();
+}
