@@ -7,7 +7,7 @@ const userController = require('../api/controllers/userController');
 const petController = require('../api/controllers/petController');
 const dispenserController = require('../api/controllers/dispenserController');
 const mongoHelper = require('../utils/mongoHelper');
-const commonUtil = require('../utils/utils');
+const utils = require('../utils/utils');
 
 let router = express.Router();
 

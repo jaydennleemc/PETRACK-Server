@@ -1,12 +1,12 @@
 
 var MongoClient = require('mongodb').MongoClient;
-const url = "mongodb://localhost:27017/admin";
+const url = "mongodb+srv://jayden:22150000@cluster0-fwcrs.mongodb.net/test?retryWrites=true&w=majority";
 
 const mongoose = require('mongoose');
 mongoose.connect(url, { useNewUrlParser: true });
 
 
-const DBName = 'admin';
+const DBName = 'petrack';
 const CollectionName = 'petrack';
 
 exports.healthCheckDB = function () {

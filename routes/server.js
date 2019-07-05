@@ -10,7 +10,7 @@ app.use('/api',router);
 
 app.listen(PORT,function(){
   // clear console
-  for(i =0; i<100; i++){
+  for(i =0; i<88; i++){
     console.log();
   }
 
