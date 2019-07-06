@@ -1,6 +1,28 @@
 
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const winston = require('winston');
+
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, prettyPrint } = format;
+ 
+const logger = createLogger({
+  format: combine(
+    label({ label: 'right meow!' }),
+    timestamp(),
+    prettyPrint()
+  ),
+      transports: [
+        new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'logs/info.log' })
+    ]
+});
+
+// Display on console 
+logger.add(new winston.transports.Console({
+    format: winston.format.prettyPrint()
+}));
+
 
 // PRIVATE and PUBLIC key
 var privateKEY = fs.readFileSync('./private.key', 'utf8');
@@ -50,13 +72,21 @@ exports.verifyJWT = function (token) {
     var legit = jwt.verify(token, publicKEY, verifyOptions);
     console.log("\nJWT verification result: " + JSON.stringify(legit));
     return JSON.stringify(legit);
-}
+};
 
 
-exports.generatePetID = function() {
+exports.generatePetID = function () {
     return 'p' + new Date().getTime();
-}
+};
 
-exports.generateDispenserID = function() {
+exports.generateDispenserID = function () {
     return 'dispenser' + new Date().getTime();
-}
+};
+
+exports.info = function (log) {
+    logger.info(log);
+};
+
+exports.err = function (log) {
+    logger.error(log);
+};

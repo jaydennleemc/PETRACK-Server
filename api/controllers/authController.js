@@ -4,45 +4,50 @@ const httpService = require('../../service/httpService');
 const utils = require('../../utils/utils');
 
 exports.validateFacebook = function (req, res, next) {
-  console.log('validateFacebook API was called');
+  utils.info('validateFacebook API was called');
   if (req.body.access_token != null) {
     // Facebook Login
-    const token = req.body.access_token;
+    token = req.body.access_token;
     httpService.validateFacebookToken(token).then((result) => {
-      // console.log(`result \n ${result}`);
+      // utils.info(`result \n ${result}`);
       facebookLogin(result, res);
     }).catch(err => {
-      console.log(err);
-      res.json({
+      utils.info(err);
+      resp = {
         'code': 1,
         'message': 'Can\'t Login With Facebook'
-      });
+      };
+      res.json(resp);
+      utils.info({"response":resp});
     });
 
   } else if (req.body.mobile != null && req.param.code != null) {
     // Mobile Login
-    res.json({
+    resp = {
       'code': 0,
       'message': 'Success'
-    });
+    };
+    res.json(resp);
+    utils.info({"response":resp});
 
   } else {
-    res.json({
+    resp = {
       'code': 1,
-      'message': 'Error'
-    });
+      'message': 'Success'
+    };
+    res.json(resp);
+    utils.info({"response":resp});
   }
-
 };
 
 
 function facebookLogin(data, res) {
-  const token = utils.generateJWT(data);
-  const json = JSON.parse(data);
+  token = utils.generateJWT(data);
+  json = JSON.parse(data);
   var success = false;
 
   mongoHelper.findOne(json.id).then(existUser => {
-    console.log(`existUser: \n ${JSON.stringify(existUser)}`);
+    utils.info(`existUser: \n ${JSON.stringify(existUser)}`);
     if (existUser == null) {
       var user = {
         id: json.id,
@@ -65,16 +70,21 @@ function facebookLogin(data, res) {
     }
 
     if (success) {
-      res.json({
+      resp = {
         'code': 0,
         'message': 'Success',
         'token': token
-      });
+      };
+      res.json(resp);
+      utils.info({"response":resp});
     } else {
-      res.json({
+      resp = {
         'code': 1,
         'message': 'Can\'t Login With Facebook'
-      });
+      };
+      res.json(resp);
+      utils.info({"response":resp});
+      
     }
   })
 }
@@ -86,27 +96,31 @@ function mobileLogin(data, res) {
 }
 
 exports.signOut = function (req, res, next) {
-  console.log('signOut API was called');
+  utils.info('signOut API was called');
   if (req.headers.authorization != null) {
-    const token = req.headers.authorization.replace('Bearer ', '')
-    console.log(token);
-    const result = JSON.parse(utils.verifyJWT(token));
+     token = req.headers.authorization.replace('Bearer ', '')
+    utils.info(token);
+     result = JSON.parse(utils.verifyJWT(token));
     mongoHelper.findOne(result.id).then(user => {
-      user.status = false
+      user.status = false;
       mongoHelper.updateDocument(user.id, user).then(result => {
         if (result) {
-          res.json({
+          resp = {
             'code': 0,
             'message': 'Success'
-          });
+          };
+          res.json(resp);
+          utils.info({"response":resp});
         } else {
-          res.json({
+          resp = {
             'code': 1,
             'message': 'Success'
-          });
+          };
+          res.json(resp);
+          utils.info({"response":resp});
         }
-      })
-    })
+      });
+    });
 
   }
 };

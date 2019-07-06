@@ -9,21 +9,22 @@ const dispenserController = require('../api/controllers/dispenserController');
 const mongoHelper = require('../utils/mongoHelper');
 const utils = require('../utils/utils');
 
+
 let router = express.Router();
 
 let version = '/v1';
 
 router.get('/', function (req, res) {
-  console.log('**** health check API was called **** ');
+  utils.info('**** health check API was called **** ');
   res.json({ 'message': 'Success' });
 });
 
 router.get('/db', function (req, res, next) {
-  console.log('**** health check API was called **** ');
+  utils.info('**** health check API was called **** ');
 
   // commonUtil.verifyJWT("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhMSI6IkRhdGEgMSIsImRhdGEyIjoiRGF0YSAyIiwiZGF0YTMiOiJEYXRhIDMiLCJkYXRhNCI6IkRhdGEgNCIsImlhdCI6MTU2MjA1NTQ0NywiZXhwIjoxNTYyMDk4NjQ3LCJhdWQiOiJodHRwOi8vbXlzb2Z0Y29ycC5pbiIsImlzcyI6Ik15c29mdCBjb3JwIiwic3ViIjoic29tZUB1c2VyLmNvbSJ9.efHZRsubdM6ERMlBZ0Yhu-LmNae3nrdO2PTbDZ0AJMt6XioNvyYL2LY9OSCVvkVaSHiL_FsKX0BI9ghTf8AfYg");
   mongoHelper.findAllData().then(result => {
-    console.log('we found many data ' + result.length)
+    utils.info('we found many data ' + result.length);
   });
 
   res.json({ 'message': 'Success' });
@@ -32,7 +33,7 @@ router.get('/db', function (req, res, next) {
 });
 
 router.get('/insert', function (req, res, next) {
-  console.log('**** insert API was called **** ');
+  utils.info('**** insert API was called **** ');
 
   var myobj = [
     { id: "11231111", name: "Company Inc", address: "Highway 37" },
@@ -46,7 +47,7 @@ router.get('/insert', function (req, res, next) {
   // mongoHelper.insertDocuments(myobj);
 
   mongoHelper.insertDocument(obj).then(res => {
-    console.log('result ' + res);
+    utils.info('result ' + res);
   });
 
   res.json({ 'message': 'Success' });
@@ -55,7 +56,7 @@ router.get('/insert', function (req, res, next) {
 });
 
 router.get('/delete', function (req, res, next) {
-  console.log('**** delete check API was called **** ');
+  utils.info('**** delete check API was called **** ');
 
 
   return new Promise((resolve, reject) => {
@@ -63,13 +64,13 @@ router.get('/delete', function (req, res, next) {
 
       result.bb = 'afaf'
 
-      console.log(result)
+      utils.info(result)
 
 
 
 
       if (mongoHelper.updateDocument(result.id, result)) {
-        console.log('found');
+        utils.info('found');
         res.json({ 'message': 'Success' });
         resolve();
       }
@@ -87,7 +88,7 @@ router.get('/delete', function (req, res, next) {
   // aa.bb = '111';
 
   // if(aa == null) {
-  //   console.log('tuyr');
+  //   utils.info('tuyr');
   //   // mongoHelper.updateDocument(aa.id, aa);
   // }
 
@@ -99,7 +100,7 @@ router.get('/delete', function (req, res, next) {
 
 
 router.get('/versions', function (req, res) {
-  console.log('**** getVersion API was called **** ');
+  utils.info('**** getVersion API was called **** ');
 
   res.json({
     'code': 0,
@@ -109,7 +110,7 @@ router.get('/versions', function (req, res) {
 });
 
 router.get('/agreement', function (req, res) {
-  console.log('**** agreement API was called ****  ');
+  utils.info('**** agreement API was called ****  ');
   res.json({
     'code': 0,
     'message': 'Success'
@@ -117,7 +118,7 @@ router.get('/agreement', function (req, res) {
 });
 
 router.get('/privacy', function (req, res) {
-  console.log('**** privacy API was called ****  ');
+  utils.info('**** privacy API was called ****  ');
   res.json({
     'code': 0,
     'message': 'Success'
