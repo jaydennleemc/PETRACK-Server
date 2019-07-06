@@ -4,21 +4,23 @@ const utils = require('../../utils/utils');
 
 
 exports.findNearBy = function (req, res) {
-   console.log('findNearBy API was called');
+   utils.info('findNearBy API was called');
 
    mongoHelper.find({ type: 'dispenser' }).then(result => {
       if (result != null && result.length > 0) {
-         res.json({
+         const resp = {
             'code': 0,
             'message': 'Success',
             'payload': result
-         });
+         };
+         res.json(resp);
 
       } else {
-         res.json({
+         const resp = {
             'code': 1,
             'message': 'Success'
-         });
+         };
+         res.json(resp);
       }
    })
 
@@ -26,7 +28,7 @@ exports.findNearBy = function (req, res) {
 
 
 exports.addDispenser = function (req, res) {
-   console.log('addDispenser API was called');
+   utils.info('addDispenser API was called');
 
    var dispenser = {
       type: 'dispenser',
@@ -39,139 +41,149 @@ exports.addDispenser = function (req, res) {
          lat: '22.2840547',
          long: '114.22432649999999'
       }
-   }
+   };
 
    mongoHelper.insertDocument(dispenser).then(result => {
       if (result) {
-         res.json({
-            'code': 0,
-            'message': 'Success'
-         });
-      } else {
-         res.json({
-            'code': 1,
-            'message': 'Success'
-         });
-      }
-   })
-
-
-};
-
-exports.updateDispenser = function (req, res) {
-   console.log('updateDispenser API was called');
-
-   res.json({
-      'code': 0,
-      'message': 'Success'
-   });
-
-};
-
-exports.deleteDispenser = function (req, res) {
-   console.log('deleteDispenser API was called');
-
-   const id = req.body.id
-   console.log(`id = ${id}`)
-   if (id != null) {
-      mongoHelper.deleteDocument(id).then(result => {
-         if (result) {
+         const resp =
             res.json({
                'code': 0,
                'message': 'Success'
             });
+      } else {
+         const resp = {
+            'code': 1,
+            'message': 'Success'
+         };
+         res.json(resp);
+      }
+   });
+};
+
+exports.updateDispenser = function (req, res) {
+   utils.info('updateDispenser API was called');
+
+   const resp = {
+      'code': 0,
+      'message': 'Success'
+   };
+   res.json(resp);
+};
+
+exports.deleteDispenser = function (req, res) {
+   utils.info('deleteDispenser API was called');
+   const id = req.body.id
+   utils.info(`id = ${id}`)
+   if (id != null) {
+      mongoHelper.deleteDocument(id).then(result => {
+         if (result) {
+            const resp = {
+               'code': 0,
+               'message': 'Success'
+            }
+            res.json(resp);
          } else {
-            res.json({
+            const resp = {
                'code': 1,
                'message': 'Success'
-            });
+            };
+            res.json(resp);
          }
 
-      })
+      });
    } else {
-      res.json({
+      const resp = {
          'code': 1,
          'message': 'Success'
-      });
+      };
+      res.json(resp);
    }
 };
 
 exports.activeDispenser = function (req, res) {
-   console.log('activeDispenser API was called');
+   utils.info('activeDispenser API was called');
 
    const id = req.body.id
-   console.log(`id = ${id}`)
+   utils.info(`id = ${id}`)
    if (id != null) {
       mongoHelper.findOne(id).then(dispenser => {
-         console.log(`dispenser info \n ${JSON.stringify(dispenser)}`);
+         utils.info(`dispenser info \n ${JSON.stringify(dispenser)}`);
          if (dispenser) {
             dispenser.enable = true;
-            console.log(`modifyed dispenser info \n ${JSON.stringify(dispenser)}`);
+            utils.info(`modifyed dispenser info \n ${JSON.stringify(dispenser)}`);
             mongoHelper.updateDocument(id, dispenser).then(result => {
                if (result) {
-                  res.json({
+                  const resp = {
                      'code': 0,
                      'message': 'Success'
-                  });
+                  };
+                  res.json(resp);
                } else {
-                  res.json({
+                  const resp = {
                      'code': 1,
                      'message': 'Success'
-                  });
+                  };
+                  res.json(resp);
                }
             })
          } else {
-            res.json({
+            const resp = {
                'code': 1,
                'message': 'Success'
-            });
+            };
+            res.json(resp);
          }
 
       })
    } else {
-      res.json({
+      const resp = {
          'code': 1,
          'message': 'Success'
-      });
+      };
+      res.json(resp);
    }
 
 };
 
 exports.deactiveDispenser = function (req, res) {
-   console.log('deactiveDispenser API was called');
+   utils.info('deactiveDispenser API was called');
 
    const id = req.body.id
 
    if (id != null) {
       mongoHelper.findOne(id).then(dispenser => {
-         console.log(`dispenser info \n ${JSON.stringify(dispenser)}`);
+         utils.info(`dispenser info \n ${JSON.stringify(dispenser)}`);
          if (dispenser) {
             dispenser.enable = false;
-            console.log(`modifyed dispenser info \n ${JSON.stringify(dispenser)}`);
+            utils.info(`modifyed dispenser info \n ${JSON.stringify(dispenser)}`);
             mongoHelper.updateDocument(id, dispenser).then(result => {
                if (result) {
-                  res.json({
+                  const resp = {
                      'code': 0,
                      'message': 'Success'
-                  });
+                  };
+                  res.json(resp);
                } else {
-                  res.json({
+                  const resp = {
                      'code': 1,
                      'message': 'Success'
-                  });
+                  };
+                  res.json(resp);
                }
             })
          } else {
-            res.json({
+            const resp = {
                'code': 1,
                'message': 'Success'
-            });
+            };
+            res.json(resp);
          }
       })
    } else {
-      res.json({
+      const resp = {
          'code': 1,
          'message': 'Success'
-      });
+      };
+      res.json(resp);
    }
 };

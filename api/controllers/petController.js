@@ -2,45 +2,54 @@ const mongoHelper = require('../../utils/mongoHelper');
 const utils = require('../../utils/utils');
 
 exports.getPets = function (req, res) {
-   console.log('getPets API was called');
+   utils.info('getPets API was called');
    if (req.headers.authorization != null) {
-      const token = req.headers.authorization.replace('Bearer ', '')
+      const token = req.headers.authorization.replace('Bearer ', '');
       const result = JSON.parse(utils.verifyJWT(token));
       mongoHelper.findOne(result.id).then(user => {
          if (user != null) {
             if (user.pets != null) {
-               res.json({
+               const resp = {
                   'code': 0,
                   'message': 'Success',
                   'payload': user.pets
-               });
+               };
+               res.json(resp);
+               utils.info({ 'response': resp });
             } else {
-               res.json({
+               const resp = {
                   'code': 0,
                   'message': 'Success',
                   'payload': []
-               });
+               };
+               res.json(resp);
+               utils.info({ 'response': resp });
             }
          } else {
-            res.json({
+            const resp = {
                'code': 1,
                'message': 'Success'
-            });
+            };
+            res.json(resp);
+            utils.info({ 'response': resp });
          }
       })
    } else {
-      res.json({
+      utils.info('authorization is empty');
+      const resp = {
          'code': 1,
          'message': 'Success'
-      });
+      };
+      res.json(resp);
+      utils.info({ 'response': resp });
    }
 };
 
 exports.getPet = function (req, res) {
-   console.log('getPet API was called');
+   utils.info('getPet API was called');
    const petId = req.query.id;
    if (req.headers.authorization != null) {
-      const token = req.headers.authorization.replace('Bearer ', '')
+      const token = req.headers.authorization.replace('Bearer ', '');
       const result = JSON.parse(utils.verifyJWT(token));
       mongoHelper.findOne(result.id).then(user => {
          if (user != null) {
@@ -49,38 +58,47 @@ exports.getPet = function (req, res) {
                   if (value.id == petId) {
                      return value
                   }
-               })
+               });
 
                if (pet[0] != null) {
-                  res.json({
+                  const resp = {
                      'code': 0,
                      'message': 'Success',
                      'payload': pets[0]
-                  });
+                  };
+                  res.json(resp);
+                  utils.info({ 'response': resp });
                } else {
-                  res.json({
+                  const resp = {
                      'code': 0,
                      'message': 'Success'
-                  });
+                  };
+                  res.json(resp);
+                  utils.info({ 'response': resp });
                }
             }
          } else {
-            res.json({
+            const resp = {
                'code': 1,
                'message': 'Success'
-            });
+            }
+            res.json(resp);
+            utils.info({ 'response': resp });
          }
-      })
+      });
    } else {
-      res.json({
+      utils.info('authorization is empty');
+      const resp = {
          'code': 1,
          'message': 'Success'
-      });
+      };
+      res.json(resp);
+      utils.info({ 'response': resp });
    }
 };
 
 exports.updatePet = function (req, res) {
-   console.log('updatePet API was called');
+   utils.info('updatePet API was called');
    const id = req.body.id;
    const name = req.body.name;
    const gender = req.body.gender;
@@ -102,42 +120,51 @@ exports.updatePet = function (req, res) {
                   'birthdate': birthdate,
                   'weight': weight,
                };
-               pets = user.pets.filter(function(value) {
-                  if(value.id = id) {
+               pets = user.pets.filter(function (value) {
+                  if (value.id = id) {
                      value = pet;
                   }
                   return value;
-               })
-               user.pets = pets
+               });
+               user.pets = pets;
             }
             mongoHelper.updateDocument(user.id, user).then(result => {
                if (result) {
-                  res.json({
+                  const resp = {
                      'code': 0,
                      'message': 'Success'
-                  });
+                  }
+                  res.json(resp);
+                  utils.info({ 'response': resp });
 
                } else {
-                  res.json({
+                  const resp = {
                      'code': 1,
                      'message': 'Success'
-                  });
+                  }
+                  res.json(resp);
+                  utils.info({ 'response': resp });
                }
             })
          }
 
       })
+   } else {
+      utils.info('authorization is empty');
+      const resp = {
+         'code': 1,
+         'message': 'Success'
+      };
+      res.json(resp);
+      utils.info({ 'response': resp });
    }
 
-   res.json({
-      'code': 0,
-      'message': 'Success'
-   });
+
 
 };
 
 exports.addPet = function (req, res) {
-   console.log('addPet API was called');
+   utils.info('addPet API was called');
    const id = utils.generatePetID();
    const name = req.body.name;
    const gender = req.body.gender;
@@ -145,7 +172,7 @@ exports.addPet = function (req, res) {
    const birthdate = req.body.birthdate;
    const weight = req.body.weight;
    if (req.headers.authorization != null) {
-      const token = req.headers.authorization.replace('Bearer ', '')
+      const token = req.headers.authorization.replace('Bearer ', '');
       const result = JSON.parse(utils.verifyJWT(token));
       mongoHelper.findOne(result.id).then(user => {
          if (user != null) {
@@ -174,29 +201,33 @@ exports.addPet = function (req, res) {
 
             mongoHelper.updateDocument(user.id, user).then(result => {
                if (result) {
-                  res.json({
-                     'code': 0,
-                     'message': 'Success'
-                  });
+                  const resp =
+                     res.json({
+                        'code': 0,
+                        'message': 'Success'
+                     });
 
                } else {
-                  res.json({
-                     'code': 1,
-                     'message': 'Success'
-                  });
+                  const resp =
+                     res.json({
+                        'code': 1,
+                        'message': 'Success'
+                     });
                }
             })
          }
 
       })
+   } else {
+      utils.info('authorization is empty');
    }
 };
 
 exports.deletePet = function (req, res) {
-   console.log('deletePet API was called');
+   utils.info('deletePet API was called');
    const petId = req.query.id;
    if (req.headers.authorization != null) {
-      const token = req.headers.authorization.replace('Bearer ', '')
+      const token = req.headers.authorization.replace('Bearer ', '');
       const result = JSON.parse(utils.verifyJWT(token));
       mongoHelper.findOne(result.id).then(user => {
          if (user != null) {
@@ -209,32 +240,39 @@ exports.deletePet = function (req, res) {
 
                user.pets = pets;
                mongoHelper.updateDocument(user.id, user).then(result => {
-                  if(result) {
-                     res.json({
-                        'code': 0,
-                        'message': 'Success'
-                     });
-                  }else {
-                     res.json({
-                        'code': 1,
-                        'message': 'Success'
-                     });
+                  if (result) {
+                     const resp =
+                        res.json({
+                           'code': 0,
+                           'message': 'Success'
+                        });
+                  } else {
+                     const resp =
+                        res.json({
+                           'code': 1,
+                           'message': 'Success'
+                        });
                   }
                })
 
             }
          } else {
-            res.json({
+            const resp = {
                'code': 1,
                'message': 'Success'
-            });
+            }
+            res.json(resp);
+            utils.info({ 'response': resp });
          }
       })
    } else {
-      res.json({
+      utils.info('authorization is empty');
+      const resp = {
          'code': 1,
          'message': 'Success'
-      });
+      };
+      res.json(resp);
+      utils.info({ 'response': resp });
    }
 
 };

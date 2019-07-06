@@ -7,43 +7,43 @@ exports.validateFacebook = function (req, res, next) {
   utils.info('validateFacebook API was called');
   if (req.body.access_token != null) {
     // Facebook Login
-    token = req.body.access_token;
+    const token = req.body.access_token;
     httpService.validateFacebookToken(token).then((result) => {
       // utils.info(`result \n ${result}`);
       facebookLogin(result, res);
     }).catch(err => {
       utils.info(err);
-      resp = {
+      const resp = {
         'code': 1,
         'message': 'Can\'t Login With Facebook'
       };
       res.json(resp);
-      utils.info({"response":resp});
+      utils.info({ "response": resp });
     });
 
   } else if (req.body.mobile != null && req.param.code != null) {
     // Mobile Login
-    resp = {
+    const resp = {
       'code': 0,
       'message': 'Success'
     };
     res.json(resp);
-    utils.info({"response":resp});
+    utils.info({ "response": resp });
 
   } else {
-    resp = {
+    const resp = {
       'code': 1,
       'message': 'Success'
     };
     res.json(resp);
-    utils.info({"response":resp});
+    utils.info({ "response": resp });
   }
 };
 
 
 function facebookLogin(data, res) {
-  token = utils.generateJWT(data);
-  json = JSON.parse(data);
+  const token = utils.generateJWT(data);
+  const json = JSON.parse(data);
   var success = false;
 
   mongoHelper.findOne(json.id).then(existUser => {
@@ -70,21 +70,21 @@ function facebookLogin(data, res) {
     }
 
     if (success) {
-      resp = {
+      const resp = {
         'code': 0,
         'message': 'Success',
         'token': token
       };
       res.json(resp);
-      utils.info({"response":resp});
+      utils.info({ "response": resp });
     } else {
-      resp = {
+      const resp = {
         'code': 1,
         'message': 'Can\'t Login With Facebook'
       };
       res.json(resp);
-      utils.info({"response":resp});
-      
+      utils.info({ "response": resp });
+
     }
   })
 }
@@ -98,26 +98,26 @@ function mobileLogin(data, res) {
 exports.signOut = function (req, res, next) {
   utils.info('signOut API was called');
   if (req.headers.authorization != null) {
-     token = req.headers.authorization.replace('Bearer ', '')
+    const token = req.headers.authorization.replace('Bearer ', '')
     utils.info(token);
-     result = JSON.parse(utils.verifyJWT(token));
+    const result = JSON.parse(utils.verifyJWT(token));
     mongoHelper.findOne(result.id).then(user => {
       user.status = false;
       mongoHelper.updateDocument(user.id, user).then(result => {
         if (result) {
-          resp = {
+          const resp = {
             'code': 0,
             'message': 'Success'
           };
           res.json(resp);
-          utils.info({"response":resp});
+          utils.info({ "response": resp });
         } else {
-          resp = {
+          const resp = {
             'code': 1,
             'message': 'Success'
           };
           res.json(resp);
-          utils.info({"response":resp});
+          utils.info({ "response": resp });
         }
       });
     });

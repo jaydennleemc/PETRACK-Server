@@ -64,13 +64,13 @@ exports.generateJWT = function (obj) {
         email: JSON.parse(obj).email,
     };
     var token = jwt.sign(payload, privateKEY, signOptions);
-    console.log("Token :" + token);
+    info("Token :" + token);
     return token;
 }
 
 exports.verifyJWT = function (token) {
     var legit = jwt.verify(token, publicKEY, verifyOptions);
-    console.log("\nJWT verification result: " + JSON.stringify(legit));
+    info("\nJWT verification result: " + JSON.stringify(legit));
     return JSON.stringify(legit);
 };
 
