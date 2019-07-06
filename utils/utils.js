@@ -8,8 +8,9 @@ const { combine, timestamp, label, prettyPrint } = format;
  
 const logger = createLogger({
   format: combine(
-    label({ label: 'right meow!' }),
-    timestamp(),
+    format.simple(),
+    // label({ label: 'right meow!' }),
+    // timestamp(),
     prettyPrint()
   ),
       transports: [
@@ -64,13 +65,13 @@ exports.generateJWT = function (obj) {
         email: JSON.parse(obj).email,
     };
     var token = jwt.sign(payload, privateKEY, signOptions);
-    info("Token :" + token);
+    this.info("Token :" + token);
     return token;
 }
 
 exports.verifyJWT = function (token) {
     var legit = jwt.verify(token, publicKEY, verifyOptions);
-    info("\nJWT verification result: " + JSON.stringify(legit));
+    this.info("\nJWT verification result: " + JSON.stringify(legit));
     return JSON.stringify(legit);
 };
 

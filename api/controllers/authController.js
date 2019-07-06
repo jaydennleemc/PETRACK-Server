@@ -65,7 +65,7 @@ function facebookLogin(data, res) {
     } else {
       user = existUser;
       user.profile.status = true;
-      user.profile.token = token
+      user.profile.token = token;
       success = mongoHelper.updateDocument(user.id, user);
     }
 
@@ -86,7 +86,7 @@ function facebookLogin(data, res) {
       utils.info({ "response": resp });
 
     }
-  })
+  });
 }
 
 function mobileLogin(data, res) {

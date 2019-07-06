@@ -60,7 +60,7 @@ exports.getPet = function (req, res) {
                   }
                });
 
-               if (pet[0] != null) {
+               if (pets[0] != null) {
                   const resp = {
                      'code': 0,
                      'message': 'Success',
