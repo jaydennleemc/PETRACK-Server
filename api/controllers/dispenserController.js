@@ -30,34 +30,44 @@ exports.findNearBy = function (req, res) {
 exports.addDispenser = function (req, res) {
    utils.info('addDispenser API was called');
 
-   var dispenser = {
-      type: 'dispenser',
-      id: utils.generateDispenserID(),
-      power: 'hight',
-      bags: 2500,
-      enable: false,
-      syncedTime: '',
-      location: {
-         lat: '22.2840547',
-         long: '114.22432649999999'
-      }
-   };
+   if (req.body.latitude != null && req.body.longitude != null) {
+      var dispenser = {
+         type: 'dispenser',
+         id: utils.generateDispenserID(),
+         power: 'hight',
+         bags: 2500,
+         enable: false,
+         syncedTime: '',
+         location: {
+            latitude: req.body.latitude,
+            longitude: req.body.longitude
+         }
+      };
 
-   mongoHelper.insertDocument(dispenser).then(result => {
-      if (result) {
-         const resp =
-            res.json({
-               'code': 0,
+      mongoHelper.insertDocument(dispenser).then(result => {
+         if (result) {
+            const resp =
+               res.json({
+                  'code': 0,
+                  'message': 'Success'
+               });
+         } else {
+            const resp = {
+               'code': 1,
                'message': 'Success'
-            });
-      } else {
-         const resp = {
-            'code': 1,
-            'message': 'Success'
-         };
-         res.json(resp);
-      }
-   });
+            };
+            res.json(resp);
+         }
+      });
+   }else {
+      const resp = {
+         'code': 1,
+         'message': 'Success'
+      };
+      res.json(resp);
+   }
+
+
 };
 
 exports.updateDispenser = function (req, res) {
