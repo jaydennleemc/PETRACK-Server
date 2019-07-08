@@ -147,7 +147,7 @@ router.put(`${version}/pet`, petController.addPet);
 router.delete(`${version}/pet`, petController.deletePet);
 
 // Dispenser API
-router.get(`${version}/findNearBy`, dispenserController.findNearBy);
+router.get(`${version}/dispenser/findNearBy`, dispenserController.findNearBy);
 
 router.put(`${version}/dispenser`, dispenserController.addDispenser);
 
